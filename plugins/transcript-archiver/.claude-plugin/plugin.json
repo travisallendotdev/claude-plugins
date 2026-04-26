@@ -1,0 +1,6 @@
+{
+  "name": "transcript-archiver",
+  "description": "Persist Claude Code session transcripts as readable markdown. Configurable output via $CLAUDE_TRANSCRIPTS_DIR.",
+  "version": "0.1.0",
+  "author": { "name": "Travis Allen" }
+}
