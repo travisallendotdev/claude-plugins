@@ -165,3 +165,102 @@ describe('idempotency', () => {
     s.cleanup()
   })
 })
+
+describe('thinking blocks render as blockquote', () => {
+  let s: ReturnType<typeof setup>
+  beforeEach(() => { s = setup() })
+  test('blockquote precedes the text', () => {
+    renderSession({
+      transcriptPath: 'tests/fixtures/thinking.jsonl',
+      sessionId: SESSION_ID,
+      outDir: s.outDir,
+      sessionEndedAt: undefined,
+    })
+    const f = readdirSync(s.outDir)[0]!
+    const body = readFileSync(join(s.outDir, f), 'utf8')
+    expect(body).toContain('> line one\n> line two')
+    expect(body).toContain('my answer')
+    s.cleanup()
+  })
+})
+
+describe('sidechain traffic excluded', () => {
+  let s: ReturnType<typeof setup>
+  beforeEach(() => { s = setup() })
+  test('subagent prompts and replies are not rendered', () => {
+    renderSession({
+      transcriptPath: 'tests/fixtures/sidechain.jsonl',
+      sessionId: SESSION_ID,
+      outDir: s.outDir,
+      sessionEndedAt: undefined,
+    })
+    const f = readdirSync(s.outDir)[0]!
+    const body = readFileSync(join(s.outDir, f), 'utf8')
+    expect(body).not.toContain('sub prompt')
+    expect(body).not.toContain('sub reply')
+    expect(body).not.toContain('sub result')
+    expect(body).toContain('main reply')
+    expect(body).toContain('_[Agent: Explore]_')
+    expect(body).toContain('final')
+    s.cleanup()
+  })
+})
+
+describe('summary entries excluded', () => {
+  let s: ReturnType<typeof setup>
+  beforeEach(() => { s = setup() })
+  test('summary lines are silently dropped', () => {
+    renderSession({
+      transcriptPath: 'tests/fixtures/with-summary.jsonl',
+      sessionId: SESSION_ID,
+      outDir: s.outDir,
+      sessionEndedAt: undefined,
+    })
+    const f = readdirSync(s.outDir)[0]!
+    const body = readFileSync(join(s.outDir, f), 'utf8')
+    expect(body).not.toContain('compaction artifact')
+    expect(body).toContain('hi')
+    expect(body).toContain('hello')
+    s.cleanup()
+  })
+})
+
+describe('slash command preserved literally', () => {
+  let s: ReturnType<typeof setup>
+  beforeEach(() => { s = setup() })
+  test('user prompt rendered as typed', () => {
+    renderSession({
+      transcriptPath: 'tests/fixtures/slash-command.jsonl',
+      sessionId: SESSION_ID,
+      outDir: s.outDir,
+      sessionEndedAt: undefined,
+    })
+    const f = readdirSync(s.outDir)[0]!
+    const body = readFileSync(join(s.outDir, f), 'utf8')
+    expect(body).toContain('/superpowers:brainstorming I want to build X')
+    s.cleanup()
+  })
+})
+
+describe('all tool kinds render with correct breadcrumbs', () => {
+  let s: ReturnType<typeof setup>
+  beforeEach(() => { s = setup() })
+  test('one breadcrumb per tool, in order', () => {
+    renderSession({
+      transcriptPath: 'tests/fixtures/all-tools.jsonl',
+      sessionId: SESSION_ID,
+      outDir: s.outDir,
+      sessionEndedAt: undefined,
+    })
+    const f = readdirSync(s.outDir)[0]!
+    const body = readFileSync(join(s.outDir, f), 'utf8')
+    expect(body).toContain('_[Read a.ts]_')
+    expect(body).toContain('_[Bash: echo hi]_')
+    expect(body).toContain('_[Grep "TODO"]_')
+    expect(body).toContain('_[WebFetch https://x.com]_')
+    expect(body).toContain('_[Agent: Explore]_')
+    expect(body).toContain('_[TodoWrite]_')
+    expect(body).toContain('_[claude_ai_Gmail: authenticate]_')
+    s.cleanup()
+  })
+})

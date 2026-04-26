@@ -1,0 +1,2 @@
+{"type":"user","isSidechain":false,"timestamp":"2026-04-25T15:00:00Z","cwd":"/Users/travis/dev/sandbox","message":{"role":"user","content":"explain"}}
+{"type":"assistant","isSidechain":false,"timestamp":"2026-04-25T15:00:05Z","cwd":"/Users/travis/dev/sandbox","message":{"role":"assistant","content":[{"type":"thinking","thinking":"line one\nline two"},{"type":"text","text":"my answer"}]}}

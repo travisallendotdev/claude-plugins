@@ -1,0 +1,6 @@
+{"type":"user","isSidechain":false,"timestamp":"2026-04-25T15:00:00Z","cwd":"/Users/travis/dev/sandbox","message":{"role":"user","content":"main"}}
+{"type":"assistant","isSidechain":false,"timestamp":"2026-04-25T15:00:05Z","cwd":"/Users/travis/dev/sandbox","message":{"role":"assistant","content":[{"type":"text","text":"main reply"},{"type":"tool_use","name":"Task","input":{"subagent_type":"Explore","prompt":"x"}}]}}
+{"type":"user","isSidechain":true,"timestamp":"2026-04-25T15:00:06Z","cwd":"/Users/travis/dev/sandbox","message":{"role":"user","content":"sub prompt"}}
+{"type":"assistant","isSidechain":true,"timestamp":"2026-04-25T15:00:07Z","cwd":"/Users/travis/dev/sandbox","message":{"role":"assistant","content":[{"type":"text","text":"sub reply"}]}}
+{"type":"user","isSidechain":false,"timestamp":"2026-04-25T15:00:08Z","cwd":"/Users/travis/dev/sandbox","message":{"role":"user","content":[{"type":"tool_result","tool_use_id":"t1","content":"sub result"}]}}
+{"type":"assistant","isSidechain":false,"timestamp":"2026-04-25T15:00:09Z","cwd":"/Users/travis/dev/sandbox","message":{"role":"assistant","content":[{"type":"text","text":"final"}]}}
