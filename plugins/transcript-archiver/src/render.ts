@@ -1,10 +1,24 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, writeFileSync, renameSync } from 'node:fs'
 import { join } from 'node:path'
 import { parseJsonl, isRenderableUser, isRenderableAssistant, type AnyMessage, type UserMessage, type AssistantMessage } from './filter'
 import { localDate } from './tz'
 import { projectSlug } from './slug'
 import { buildFrontmatter, type FrontmatterFields } from './frontmatter'
 import { formatUserTurn, formatAssistantTurn } from './format'
+
+function readExistingSessionEnd(path: string): string | undefined {
+  if (!existsSync(path)) return undefined
+  try {
+    const content = readFileSync(path, 'utf8')
+    // Look for `session_ended_at:` line within the front matter (between the first two `---` lines)
+    const fmMatch = content.match(/^---\n([\s\S]*?)\n---\n/)
+    if (!fmMatch) return undefined
+    const lineMatch = fmMatch[1]!.match(/^session_ended_at:\s*(.+)$/m)
+    return lineMatch?.[1]?.trim()
+  } catch {
+    return undefined
+  }
+}
 
 export interface RenderOptions {
   transcriptPath: string
@@ -100,6 +114,13 @@ export function renderSession(opts: RenderOptions): void {
     const filename = `${date}_${project}_${opts.sessionId}.md`
     const path = join(opts.outDir, filename)
 
+    // On the final file in the chain, prefer the new SessionEnd payload's timestamp;
+    // otherwise preserve any session_ended_at that was already on disk (e.g., from a
+    // prior SessionEnd that we shouldn't clobber on a subsequent Stop).
+    const effectiveSessionEnd = isLast
+      ? (opts.sessionEndedAt ?? readExistingSessionEnd(path))
+      : undefined
+
     const fields: FrontmatterFields = {
       session_id: opts.sessionId,
       project,
@@ -109,7 +130,7 @@ export function renderSession(opts: RenderOptions): void {
       started_at: msgs[0]!.timestamp!,
       original_started_at: isFirst ? undefined : originalStartedAt,
       last_updated_at: msgs[msgs.length - 1]!.timestamp!,
-      session_ended_at: isLast && opts.sessionEndedAt ? opts.sessionEndedAt : undefined,
+      session_ended_at: effectiveSessionEnd,
       continues_into: nextDate,
       continued_from: prevDate,
     }
@@ -127,7 +148,11 @@ export function renderSession(opts: RenderOptions): void {
     const contents = frontmatter + heading + continuationTop + body + continuationBottom
 
     try {
-      writeFileSync(path, contents, 'utf8')
+      // Write to a temp file then atomically rename, so concurrent or crashing
+      // hook invocations cannot leave a torn file.
+      const tmpPath = `${path}.tmp`
+      writeFileSync(tmpPath, contents, 'utf8')
+      renameSync(tmpPath, path)
     } catch (e) {
       console.error(`transcript-archiver: failed to write ${path}: ${(e as Error).message}`)
       // continue to next date

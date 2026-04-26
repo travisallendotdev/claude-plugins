@@ -264,3 +264,31 @@ describe('all tool kinds render with correct breadcrumbs', () => {
     s.cleanup()
   })
 })
+
+describe('Stop after SessionEnd preserves session_ended_at', () => {
+  let s: ReturnType<typeof setup>
+  beforeEach(() => { s = setup() })
+
+  test('a subsequent Stop does not clobber session_ended_at written by a prior SessionEnd', () => {
+    // First, simulate SessionEnd writing the file with an end timestamp
+    renderSession({
+      transcriptPath: 'tests/fixtures/single-day.jsonl',
+      sessionId: SESSION_ID,
+      outDir: s.outDir,
+      sessionEndedAt: '2026-04-25T15:30:00Z',
+    })
+    const f = join(s.outDir, `2026-04-25_sandbox_${SESSION_ID}.md`)
+    expect(readFileSync(f, 'utf8')).toContain('session_ended_at: 2026-04-25T15:30:00Z')
+
+    // Then simulate a late Stop arriving (no sessionEndedAt in opts).
+    renderSession({
+      transcriptPath: 'tests/fixtures/single-day.jsonl',
+      sessionId: SESSION_ID,
+      outDir: s.outDir,
+      sessionEndedAt: undefined,
+    })
+    // The end timestamp from the prior SessionEnd should still be there.
+    expect(readFileSync(f, 'utf8')).toContain('session_ended_at: 2026-04-25T15:30:00Z')
+    s.cleanup()
+  })
+})
