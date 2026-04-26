@@ -1,0 +1,12 @@
+{
+  "name": "travisallendotdev",
+  "owner": { "name": "Travis Allen" },
+  "plugins": [
+    {
+      "name": "transcript-archiver",
+      "source": "./plugins/transcript-archiver",
+      "description": "Persist Claude Code session transcripts as readable markdown.",
+      "version": "0.1.0"
+    }
+  ]
+}
