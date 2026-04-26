@@ -1,0 +1,2 @@
+{"type":"user","isSidechain":false,"timestamp":"2026-04-25T15:00:00Z","cwd":"/Users/travis/dev/sandbox","gitBranch":"main","message":{"role":"user","content":"hi"}}
+{"type":"assistant","isSidechain":false,"timestamp":"2026-04-25T15:00:05Z","cwd":"/Users/travis/dev/sandbox","message":{"role":"assistant","model":"claude-opus-4-7","content":[{"type":"text","text":"hello"}]}}

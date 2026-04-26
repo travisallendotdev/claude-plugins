@@ -1,0 +1,4 @@
+{"type":"user","isSidechain":false,"timestamp":"2026-04-25T15:00:00Z","cwd":"/Users/travis/dev/sandbox","gitBranch":"main","message":{"role":"user","content":"day 1"}}
+{"type":"assistant","isSidechain":false,"timestamp":"2026-04-25T15:00:05Z","cwd":"/Users/travis/dev/sandbox","message":{"role":"assistant","model":"claude-opus-4-7","content":[{"type":"text","text":"day 1 reply"}]}}
+{"type":"user","isSidechain":false,"timestamp":"2026-04-30T15:00:00Z","cwd":"/Users/travis/dev/sandbox","message":{"role":"user","content":"resumed"}}
+{"type":"assistant","isSidechain":false,"timestamp":"2026-04-30T15:00:05Z","cwd":"/Users/travis/dev/sandbox","message":{"role":"assistant","content":[{"type":"text","text":"resumed reply"}]}}

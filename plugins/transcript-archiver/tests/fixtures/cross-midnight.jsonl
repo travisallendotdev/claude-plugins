@@ -1,0 +1,4 @@
+{"type":"user","isSidechain":false,"timestamp":"2026-04-26T03:50:00Z","cwd":"/Users/travis/dev/sandbox","gitBranch":"main","message":{"role":"user","content":"late night q"}}
+{"type":"assistant","isSidechain":false,"timestamp":"2026-04-26T03:50:30Z","cwd":"/Users/travis/dev/sandbox","message":{"role":"assistant","model":"claude-opus-4-7","content":[{"type":"text","text":"late night a"}]}}
+{"type":"user","isSidechain":false,"timestamp":"2026-04-26T04:30:00Z","cwd":"/Users/travis/dev/sandbox","message":{"role":"user","content":"after midnight q"}}
+{"type":"assistant","isSidechain":false,"timestamp":"2026-04-26T04:30:30Z","cwd":"/Users/travis/dev/sandbox","message":{"role":"assistant","content":[{"type":"text","text":"after midnight a"}]}}
